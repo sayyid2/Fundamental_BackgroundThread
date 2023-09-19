@@ -6,6 +6,11 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Button
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -22,12 +27,12 @@ class MainActivity : AppCompatActivity() {
 
         btnStart.setOnClickListener{
             executor.execute{
-                try {
+                lifecycleScope.launch (Dispatchers.Default){
                     //simulasi proses kompresing
                     for (i in 0..10){
-                        Thread.sleep(500)
+                        delay(500)
                         val percentage = i*10
-                        handler.post {
+                        withContext(Dispatchers.Main) {
                             if (percentage == 100) {
                                 tvStatus.setText(R.string.task_completed)
                             } else {
@@ -36,8 +41,6 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
-                }catch (e:InterruptedException){
-                    e.printStackTrace()
                 }
             }
         }
